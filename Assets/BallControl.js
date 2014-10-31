@@ -13,14 +13,12 @@ function Start() {
 
 function Update() {
 	if (!stopped) {
-		var xVel : float = rigidbody2D.velocity.x;
-		if (xVel < (minSpeed * 0.95) && xVel > (minSpeed * -0.95) && xVel != 0) {
-			if (xVel > 0) {
-				rigidbody2D.velocity.x = minSpeed;
-			} else {
-				rigidbody2D.velocity.x = -minSpeed;
-			}
-			Debug.Log("Adjusted ball X velocity from " + xVel + " to " + rigidbody2D.velocity.x);
+		var velX : float = rigidbody2D.velocity.x;
+		var velY : float = rigidbody2D.velocity.y;
+		var velT : float = Mathf.Abs(velX) + Mathf.Abs(velY);
+		if (velT < (minSpeed * 0.95) && velT != 0) {
+			rigidbody2D.velocity.x = Mathf.Sign(velX) * (minSpeed - Mathf.Abs(velY));
+			Debug.Log("Adjusted ball X velocity from " + velX + " to " + rigidbody2D.velocity.x);
 		}
 
 		var spin = rigidbody2D.velocity.y > 0 ? Vector3.forward : Vector3.back;
@@ -28,42 +26,63 @@ function Update() {
 	}
 }
 
-function OnCollisionEnter2D (collision : Collision2D) {
+function OnCollisionEnter2D(collision : Collision2D) {
 	var ball = rigidbody2D;
-	var velY = ball.velocity.y;
 	var velX = ball.velocity.x;
+	var velY = ball.velocity.y;
 
-	if (collision.collider.tag == "Player") {
-		if (stopped) {
-			Debug.Log("Gotcha! Hit a player while supposedly stopped!");
-		} else {
-			if (collision.collider.rigidbody2D.velocity.y != 0) {
-				velY = velY/2 + collision.collider.rigidbody2D.velocity.y/3;
-				rigidbody2D.velocity.y = velY;
+	if (collision.collider.tag == "NonScoreWall") {
+		if (ball.velocity.y > -minVerticalSpeed && ball.velocity.y < minVerticalSpeed) {
+			// TODO Don't just add minVerticalSpeed; take it from velX
+			if (ball.velocity.y > 0) {
+				ball.velocity.y = minVerticalSpeed;
 			} else {
-				rigidbody2D.velocity.y = velY * 0.8;
+				ball.velocity.y = -minVerticalSpeed;
 			}
-			
-			audio.pitch = Random.Range(0.9f, 1.1f);
-			audio.Play();
+			Debug.Log("Adjusted ball Y velocity from " + velY + " to " + ball.velocity.y);
 		}
+ 		ball.velocity.x += Mathf.Sign(ball.velocity.x) * nudgeFactor * minSpeed;
+		Debug.Log("Nudged ball X velocity from " + velX + " to " + ball.velocity.x);
+	}
+}
+
+function OnCollisionExit2D(collision : Collision2D) {
+	var ball = rigidbody2D;
+	var velX = ball.velocity.x;
+	var velY = ball.velocity.y;
+
+	Debug.Log("Collided with velocity x " + velX + " y " + velY);
+	if (collision.collider.tag == "Player") {
+		var d : float;
+		if (collision.collider.rigidbody2D.velocity.y != 0) {
+			var p : float = velY/2 + collision.collider.rigidbody2D.velocity.y/3;
+			d = Mathf.Abs(p - velY);
+			rigidbody2D.velocity.y = p;
+//			rigidbody2D.velocity.x -= Mathf.Sign(velX) * d;
+//			Debug.Log("Swiped " + d + " of x " + velX + " y " + velY + "   ->   x " + rigidbody2D.velocity.x + " y " + rigidbody2D.velocity.y);
+		} else {
+			d = Mathf.Abs(velY * 0.2);
+			rigidbody2D.velocity.y -= Mathf.Sign(velY) * d;
+			rigidbody2D.velocity.x += Mathf.Sign(velX) * d;
+			Debug.Log("Flattened " + d + " of x " + velX + " y " + velY + "   ->   x " + rigidbody2D.velocity.x + " y " + rigidbody2D.velocity.y);
+		}
+		
+		audio.pitch = Random.Range(0.9f, 1.1f);
+		audio.Play();
+	} else if (collision.collider.tag == "NonScoreWall") {
+		if (ball.velocity.y > -minVerticalSpeed && ball.velocity.y < minVerticalSpeed) {
+			// TODO Don't just add minVerticalSpeed; take it from velX
+			if (ball.velocity.y > 0) {
+				ball.velocity.y = minVerticalSpeed;
+			} else {
+				ball.velocity.y = -minVerticalSpeed;
+			}
+			Debug.Log("Adjusted ball Y velocity from " + velY + " to " + ball.velocity.y);
+		}
+ 		ball.velocity.x += Mathf.Sign(ball.velocity.x) * nudgeFactor * minSpeed;
+		Debug.Log("Nudged ball X velocity from " + velX + " to " + ball.velocity.x);
 	} else if (collision.collider.tag == "ScoreWall") {
 		GameManager.Score(collision.collider.transform.name);
-	} else if (collision.collider.tag == "NonScoreWall") {
-		if (stopped) {
-			Debug.Log("Gotcha! Hit a non-score wall while supposedly stopped!");
-		} else {
-			if (ball.velocity.y > -minVerticalSpeed && ball.velocity.y < minVerticalSpeed) {
-				if (ball.velocity.y > 0) {
-					ball.velocity.y = minVerticalSpeed;
-				} else {
-					ball.velocity.y = -minVerticalSpeed;
-				}
-				Debug.Log("Adjusted ball Y velocity from " + velY + " to " + ball.velocity.y);
-			}
-	 		ball.velocity.x += Mathf.Sign(ball.velocity.x) * nudgeFactor * minSpeed;
-			Debug.Log("Adjusted ball X velocity from " + velX + " to " + ball.velocity.x);
-		}
 	}
 }
 
@@ -90,14 +109,14 @@ function ResetBall(wait: float) {
 }
 
 function GoBall() {
+	rigidbody2D.velocity.y = Random.Range(-2f, 2f);
 	var randomNumber = Random.Range(0f, 1f);
 	if (Random.Range(0f, 1f) <= 0.5) {
-		rigidbody2D.velocity.x = minSpeed;
+		rigidbody2D.velocity.x = minSpeed - Mathf.Abs(rigidbody2D.velocity.y);
 	} else {
-		rigidbody2D.velocity.x = -minSpeed;
+		rigidbody2D.velocity.x = -minSpeed + Mathf.Abs(rigidbody2D.velocity.y);
 	}
-	rigidbody2D.velocity.y = Random.Range(-2f, 2f);
-	
+		
 	stopped = false;
 }
 
