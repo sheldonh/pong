@@ -117,6 +117,7 @@ function LaunchLevel(difficultyLevel: int) {
 	} else {
 		playerScore01 = 0;
 		playerScore02 = 0;
+		theBall.gameObject.SendMessage("SetLevel", difficultyLevel);
 		if (singlePlayer) {
 			level.SendMessage("SetLevel", difficultyLevel);
 			player02.gameObject.SendMessage("SetLevel", difficultyLevel);
@@ -128,11 +129,8 @@ function LaunchLevel(difficultyLevel: int) {
 		player01.position.y = 0;
 		player02.position.y = 0;
 		
-		var minSpeed = 12.0 + 2.8 * Mathf.Sqrt(1 + difficultyLevel) - 0.1 * Mathf.Sqrt(levelToWin - difficultyLevel);
-		Debug.Log("Setting minimum ball speed to " + minSpeed);
-
 		yield WaitForSeconds(2.0);
-		theBall.gameObject.SendMessage("GoBall", minSpeed);
+		theBall.gameObject.SendMessage("GoBall");
 	}
 }
 

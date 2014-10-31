@@ -1,11 +1,14 @@
 ﻿#pragma strict
 
+var level : int;
 var minSpeed : float;
 var minVerticalSpeed : float;
+var nudgeFactor : float;
 var stopped : boolean;
 
 function Start() {
 	stopped = true;
+	SetLevel(1);
 }
 
 function Update() {
@@ -58,9 +61,6 @@ function OnCollisionEnter2D (collision : Collision2D) {
 				}
 				Debug.Log("Adjusted ball Y velocity from " + velY + " to " + ball.velocity.y);
 			}
-			// I *really* need the current difficulty level here!!!
-			// (I want approx 2.5% - 10% nudge factor from level 1 to 9, at about 5% at level 4
-			var nudgeFactor: float = Mathf.Sqrt(minSpeed) / (35750000 / Mathf.Pow(minSpeed, 4));
 	 		ball.velocity.x += Mathf.Sign(ball.velocity.x) * nudgeFactor * minSpeed;
 			Debug.Log("Adjusted ball X velocity from " + velX + " to " + ball.velocity.x);
 		}
@@ -83,15 +83,13 @@ function ResetBall(wait: float) {
 
 	if (wait >= 0) {
 		yield WaitForSeconds(wait);
-		GoBall(minSpeed);
+		GoBall();
 	} else {
 		Debug.Log("Ball stopped without resume on request");
 	}
 }
 
-function GoBall(newMinSpeed: float) {
-	minSpeed = newMinSpeed;
-	
+function GoBall() {
 	var randomNumber = Random.Range(0f, 1f);
 	if (Random.Range(0f, 1f) <= 0.5) {
 		rigidbody2D.velocity.x = minSpeed;
@@ -101,4 +99,45 @@ function GoBall(newMinSpeed: float) {
 	rigidbody2D.velocity.y = Random.Range(-2f, 2f);
 	
 	stopped = false;
+}
+
+function SetLevel(i: int) {
+	level = i;
+	nudgeFactor = NudgeFactor(i);
+	minSpeed = MinSpeed(i);
+	Debug.Log("Setting minimum ball speed to " + minSpeed + "(nudge factor " + nudgeFactor + ")");
+}
+
+function NudgeFactor(i: int): float {
+	if (i == 1) {
+		return 0.005;
+	} else if (i == 2) {
+		return 0.01;
+	} else if (i == 3) {
+		return 0.025;
+	} else {
+		return 0.01 * Mathf.Min(i + 1, 10);
+	}
+}
+
+function MinSpeed(i: int): float {
+	if (i == 1) {
+		return 15.0;
+	} else if (i == 2) {
+		return 16.0;
+	} else if (i == 3) {
+		return 17.0;
+	} else if (i == 4) {
+		return 18.0;
+	} else if (i == 5) {
+		return 18.6;
+	} else if (i == 6) {
+		return 19.2;
+	} else if (i == 7) {
+		return 19.75;
+	} else if (i == 8) {
+		return 20.25;
+	} else {
+		return 20.75;
+	}
 }

@@ -51,6 +51,7 @@ function EnableComputerControls() {
 
 function Start() {
 	theBall = GameObject.FindGameObjectWithTag("Ball").transform;
+	level = 1;
 }
 
 function Update ()

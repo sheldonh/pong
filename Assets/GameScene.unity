@@ -981,7 +981,7 @@ GameObject:
   - 114: {fileID: 709494767}
   - 114: {fileID: 709494768}
   - 82: {fileID: 709494769}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: _GM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2634,8 +2634,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b93872ae24fc56343894379e298cad7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  level: 0
   minSpeed: 18
   minVerticalSpeed: 1.5
+  nudgeFactor: 0
   stopped: 0
 --- !u!82 &1860085044
 AudioSource:
