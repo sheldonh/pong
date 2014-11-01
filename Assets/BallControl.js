@@ -31,28 +31,10 @@ function OnCollisionEnter2D(collision : Collision2D) {
 	var velX = ball.velocity.x;
 	var velY = ball.velocity.y;
 
-	if (collision.collider.tag == "NonScoreWall") {
-		if (ball.velocity.y > -minVerticalSpeed && ball.velocity.y < minVerticalSpeed) {
-			// TODO Don't just add minVerticalSpeed; take it from velX
-			if (ball.velocity.y > 0) {
-				ball.velocity.y = minVerticalSpeed;
-			} else {
-				ball.velocity.y = -minVerticalSpeed;
-			}
-			Debug.Log("Adjusted ball Y velocity from " + velY + " to " + ball.velocity.y);
-		}
- 		ball.velocity.x += Mathf.Sign(ball.velocity.x) * nudgeFactor * minSpeed;
-		Debug.Log("Nudged ball X velocity from " + velX + " to " + ball.velocity.x);
-	}
-}
-
-function OnCollisionExit2D(collision : Collision2D) {
-	var ball = rigidbody2D;
-	var velX = ball.velocity.x;
-	var velY = ball.velocity.y;
-
 	Debug.Log("Collided with velocity x " + velX + " y " + velY);
-	if (collision.collider.tag == "Player") {
+	if (collision.collider.tag == "PlayerEdge") {
+		Debug.Log("Edge collision");
+	} else if (collision.collider.tag == "Player") {
 		var d : float;
 		if (collision.collider.rigidbody2D.velocity.y != 0) {
 			var p : float = velY/2 + collision.collider.rigidbody2D.velocity.y/3;
@@ -77,7 +59,7 @@ function OnCollisionExit2D(collision : Collision2D) {
 			} else {
 				ball.velocity.y = -minVerticalSpeed;
 			}
-			Debug.Log("Adjusted ball Y velocity from " + velY + " to " + ball.velocity.y);
+			Debug.Log("Nudged ball Y velocity from " + velY + " to " + ball.velocity.y);
 		}
  		ball.velocity.x += Mathf.Sign(ball.velocity.x) * nudgeFactor * minSpeed;
 		Debug.Log("Nudged ball X velocity from " + velX + " to " + ball.velocity.x);
