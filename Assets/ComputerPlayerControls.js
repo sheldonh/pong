@@ -8,7 +8,7 @@ var far = 10.0;
 
 var theBall : Transform;
 
-var playerControls : Component;
+var playerControls : PlayerControls;
 
 function SetLevel(i: int) {
 	Debug.Log("Setting computer player level " + i);
@@ -53,6 +53,7 @@ function EnableComputerControls() {
 
 function Start() {
 	theBall = GameObject.FindGameObjectWithTag("Ball").transform;
+	playerControls = GetComponent(PlayerControls);
 	level = 1;
 }
 
@@ -66,7 +67,7 @@ function Update ()
 		rigidbody2D.velocity.y = 0;
 		rigidbody2D.velocity.x = 0;
 	}
-	GetComponent(PlayerControls).swipeForce = rigidbody2D.velocity;
+	playerControls.swipeForce = rigidbody2D.velocity;
 }
 
 function BallIsApproaching() {
