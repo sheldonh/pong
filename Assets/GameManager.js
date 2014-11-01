@@ -30,17 +30,17 @@ function Start() {
 	level = GameObject.Find("LevelText");
 	gameManager = GetComponent(GameManager);
 	menu = GameObject.Find("Menu");
-	bonusAudio = GameObject.Find("rightWall").audio;
+	bonusAudio = GameObject.Find("RightWall").audio;
 }
 
 static function Score(wallName : String) {
 	theBall.gameObject.SendMessage("StopBall");
 
-	if (wallName == "rightWall") {
+	if (wallName == "RightWall") {
 		playerScore01 += 1;
 		player01.gameObject.SendMessage("Shrink");
 		player02.gameObject.SendMessage("Grow");
-	} else if (wallName == "leftWall") {
+	} else if (wallName == "LeftWall") {
 		playerScore02 += 1;
 		player02.gameObject.SendMessage("Shrink");
 		player01.gameObject.SendMessage("Grow");

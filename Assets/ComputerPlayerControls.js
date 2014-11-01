@@ -8,6 +8,8 @@ var far = 10.0;
 
 var theBall : Transform;
 
+var playerControls : Component;
+
 function SetLevel(i: int) {
 	Debug.Log("Setting computer player level " + i);
 	level = i;
@@ -64,6 +66,7 @@ function Update ()
 		rigidbody2D.velocity.y = 0;
 		rigidbody2D.velocity.x = 0;
 	}
+	GetComponent(PlayerControls).swipeForce = rigidbody2D.velocity;
 }
 
 function BallIsApproaching() {
