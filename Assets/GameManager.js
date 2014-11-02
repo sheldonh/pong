@@ -94,6 +94,7 @@ function LaunchGame1P() {
 	singlePlayer = true;
 	player02.gameObject.SendMessage("DisablePlayerControls");
 	player02.gameObject.SendMessage("EnableComputerControls");
+	theBall.gameObject.SendMessage("StopBall");
 	LaunchLevel(startingLevel);
 }
 
@@ -101,6 +102,7 @@ function LaunchGame2P() {
 	singlePlayer = false;
 	player02.gameObject.SendMessage("DisableComputerControls");
 	player02.gameObject.SendMessage("EnablePlayerControls");
+	theBall.gameObject.SendMessage("StopBall");
 	LaunchLevel(startingLevel);
 }
 
