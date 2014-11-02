@@ -1,14 +1,17 @@
 ﻿#pragma strict
 
 var level : int;
-var minSpeed : float;
-var minVerticalSpeed : float;
-var nudgeFactor : float;
+
+var speed : float;
 var stopped : boolean;
 
 function Start() {
 	stopped = true;
 	SetLevel(1);
+}
+
+function Update() {
+	FixSpeed();
 }
 
 function OnCollisionEnter2D(collision : Collision2D) {
@@ -19,17 +22,33 @@ function OnCollisionEnter2D(collision : Collision2D) {
 	if (collision.collider.tag == "PlayerEdge") {
 		Debug.Log("Edge collision");
 	} else if (collision.collider.tag == "Player") {
-		rigidbody2D.AddForce(collision.collider.GetComponent(PlayerControls).swipeForce);
+		var player = collision.collider.GetComponent(PlayerControls);
+		if (player.swipeForce.magnitude > 0) {
+			ball.velocity.y = ball.velocity.y / 2 + collision.collider.GetComponent(PlayerControls).swipeForce.y / 3;
+			Debug.Log("Swiped");
+		} else {
+			ball.velocity.y *= 0.8;
+			Debug.Log("Flattened");
+		}
+		speed += 0.1;
 
 		audio.pitch = Random.Range(0.9f, 1.1f);
 		audio.Play();
+	} else if (collision.collider.tag == "NonScoreWall") {
+		if (Mathf.Abs(ball.velocity.y) < 1) {
+			ball.velocity.y -= Mathf.Sign(ball.position.y) * 1;
+			Debug.Log("Nudged");
+		}
 	} else if (collision.collider.tag == "ScoreWall") {
 		GameManager.Score(collision.collider.transform.name);
+		return;
 	}
+	FixSpeed();
 }
 
 function StopBall() {
 	stopped = true;
+	speed = 0.0;
 	yield WaitForEndOfFrame();
 	
 	rigidbody2D.velocity.x = 0;
@@ -51,52 +70,42 @@ function ResetBall(wait: float) {
 }
 
 function GoBall() {
+	speed = LevelSpeed();
 	rigidbody2D.velocity.y = Random.Range(-2f, 2f);
-	var randomNumber = Random.Range(0f, 1f);
 	if (Random.Range(0f, 1f) <= 0.5) {
-		rigidbody2D.velocity.x = minSpeed - Mathf.Abs(rigidbody2D.velocity.y);
+		rigidbody2D.velocity.x = speed;
 	} else {
-		rigidbody2D.velocity.x = -minSpeed + Mathf.Abs(rigidbody2D.velocity.y);
+		rigidbody2D.velocity.x = -speed;
 	}
+	FixSpeed();
 		
 	stopped = false;
 }
 
+function FixSpeed() {
+	rigidbody2D.velocity = rigidbody2D.velocity.normalized * speed;
+}
+
 function SetLevel(i: int) {
 	level = i;
-	nudgeFactor = NudgeFactor(i);
-	minSpeed = MinSpeed(i);
-	Debug.Log("Setting minimum ball speed to " + minSpeed + "(nudge factor " + nudgeFactor + ")");
 }
 
-function NudgeFactor(i: int): float {
-	if (i == 1) {
-		return 0.005;
-	} else if (i == 2) {
-		return 0.01;
-	} else if (i == 3) {
-		return 0.025;
-	} else {
-		return 0.01 * Mathf.Min(i + 1, 10);
-	}
-}
-
-function MinSpeed(i: int): float {
-	if (i == 1) {
+function LevelSpeed(): float {
+	if (level == 1) {
 		return 15.0;
-	} else if (i == 2) {
+	} else if (level == 2) {
 		return 16.0;
-	} else if (i == 3) {
+	} else if (level == 3) {
 		return 17.0;
-	} else if (i == 4) {
+	} else if (level == 4) {
 		return 18.0;
-	} else if (i == 5) {
+	} else if (level == 5) {
 		return 18.6;
-	} else if (i == 6) {
+	} else if (level == 6) {
 		return 19.2;
-	} else if (i == 7) {
+	} else if (level == 7) {
 		return 19.75;
-	} else if (i == 8) {
+	} else if (level == 8) {
 		return 20.25;
 	} else {
 		return 20.75;
