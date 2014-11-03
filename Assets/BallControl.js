@@ -4,6 +4,9 @@ var level : int;
 
 var speed : float;
 var stopped : boolean;
+var lastHitPlayer : GameObject;
+var lastHitBounces : int;
+var foul : GameObject;
 
 function Start() {
 	stopped = true;
@@ -30,10 +33,24 @@ function OnCollisionEnter2D(collision : Collision2D) {
 		}
 		speed += 0.1;
 
+		lastHitPlayer = collision.collider.gameObject;
+		lastHitBounces = 0;
+		
 		audio.pitch = Random.Range(0.9f, 1.1f);
 		audio.Play();
 	} else if (collision.collider.tag == "NonScoreWall") {
-		if (Mathf.Abs(ball.velocity.y) < 1) {
+		lastHitBounces += 1;
+		if (lastHitBounces > 4) {
+			// TODO play Hit audio
+			Debug.Log("Foul");
+			foul.audio.Play();
+			if (lastHitPlayer.name == "Player01") {
+				GameManager.Score("LeftWall");
+			} else {
+				GameManager.Score("RightWall");
+			}
+			return;
+		} else if (Mathf.Abs(ball.velocity.y) < 1) {
 			ball.velocity.y -= Mathf.Sign(ball.position.y) * 1;
 			Debug.Log("Nudged");
 		}
@@ -68,6 +85,8 @@ function ResetBall(wait: float) {
 }
 
 function GoBall() {
+	lastHitBounces = 0;
+	lastHitPlayer = null;
 	speed = LevelSpeed();
 	rigidbody2D.velocity.y = Random.Range(-2f, 2f);
 	if (Random.Range(0f, 1f) <= 0.5) {
