@@ -9,9 +9,6 @@ var initialSize = 0.8;
 var minSize = 0.6;
 var maxSize = 1.0;
 
-var topEdge : GameObject;
-var bottomEdge : GameObject;
-
 var topWall : GameObject;
 var bottomWall : GameObject;
 

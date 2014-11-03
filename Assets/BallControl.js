@@ -19,9 +19,7 @@ function OnCollisionEnter2D(collision : Collision2D) {
 	var velX = ball.velocity.x;
 	var velY = ball.velocity.y;
 
-	if (collision.collider.tag == "PlayerEdge") {
-		Debug.Log("Edge collision");
-	} else if (collision.collider.tag == "Player") {
+	if (collision.collider.tag == "Player") {
 		var player = collision.collider.GetComponent(PlayerControls);
 		if (player.swipeForce.magnitude > 0) {
 			ball.velocity.y = ball.velocity.y / 2 + collision.collider.GetComponent(PlayerControls).swipeForce.y / 3;
