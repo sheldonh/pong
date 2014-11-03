@@ -59,6 +59,8 @@ function Start() {
 
 function Update ()
 {
+	playerControls.Update();
+
 	if ((BallIsApproaching() && BallIsNotFar()) || BallIsClose()) {
 		var deltaY = theBall.position.y - transform.position.y;
 		// Why does this magic number 100 give me the <10 speeds I want when deltaY is small? What is the relationship between velocity and 1 unit?

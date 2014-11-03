@@ -25,8 +25,10 @@ function OnCollisionEnter2D(collision : Collision2D) {
 	if (collision.collider.tag == "Player") {
 		var player = collision.collider.GetComponent(PlayerControls);
 		if (player.swipeForce.magnitude > 0) {
+/*
 			ball.velocity.y = ball.velocity.y / 2 + collision.collider.GetComponent(PlayerControls).swipeForce.y / 3;
 			Debug.Log("Swiped");
+*/
 		} else {
 			ball.velocity.y *= 0.8;
 			Debug.Log("Flattened");
@@ -70,6 +72,7 @@ function StopBall() {
 	rigidbody2D.velocity.y = 0;
 	rigidbody2D.position.x = 0;
 	rigidbody2D.position.y = 0;
+	rigidbody2D.angularVelocity = 0;
 	transform.rotation = Quaternion.identity;
 }
 

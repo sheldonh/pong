@@ -1541,7 +1541,7 @@ Rigidbody2D:
   m_AngularDrag: .0500000007
   m_GravityScale: 0
   m_FixedAngle: 1
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
@@ -1563,6 +1563,7 @@ MonoBehaviour:
   initialSize: .800000012
   minSize: .600000024
   maxSize: 1
+  fixedX: 0
   topWall: {fileID: 0}
   bottomWall: {fileID: 0}
   swipeForce: {x: 0, y: 0}
@@ -1574,7 +1575,7 @@ BoxCollider2D:
   m_PrefabInternal: {fileID: 1415680242}
   m_GameObject: {fileID: 1023220095}
   m_Enabled: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 7db4f7896065a1e488774878b53fc53b, type: 2}
   m_IsTrigger: 0
   m_Size: {x: .239999995, y: 2.8599999}
   m_Center: {x: 0, y: 0}
@@ -2385,7 +2386,7 @@ Rigidbody2D:
   m_AngularDrag: .0500000007
   m_GravityScale: 0
   m_FixedAngle: 1
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
@@ -2407,6 +2408,7 @@ MonoBehaviour:
   initialSize: .800000012
   minSize: .600000024
   maxSize: 1
+  fixedX: 0
   topWall: {fileID: 0}
   bottomWall: {fileID: 0}
   swipeForce: {x: 0, y: 0}
@@ -2418,7 +2420,7 @@ BoxCollider2D:
   m_PrefabInternal: {fileID: 201560200}
   m_GameObject: {fileID: 1555946653}
   m_Enabled: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 7db4f7896065a1e488774878b53fc53b, type: 2}
   m_IsTrigger: 0
   m_Size: {x: .239999995, y: 2.8599999}
   m_Center: {x: 0, y: 0}
@@ -2710,9 +2712,9 @@ Rigidbody2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1860085038}
-  m_Mass: .0700000003
+  m_Mass: 9.99999975e-05
   m_LinearDrag: 0
-  m_AngularDrag: .5
+  m_AngularDrag: 0
   m_GravityScale: 0
   m_FixedAngle: 0
   m_IsKinematic: 0
